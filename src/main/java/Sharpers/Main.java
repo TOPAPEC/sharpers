@@ -126,6 +126,7 @@ public class Main {
         PlayerBaseClass[] players = new PlayerBaseClass[]{fairPlayer,
                 new Sharper(deck, new FairPlayer[]{fairPlayer}),
                 new Sharper(deck, new FairPlayer[]{fairPlayer})};
+        printGameStart();
         runGameRound(players);
         printPlayersScores(players);
         printWinner(players);
@@ -159,6 +160,7 @@ public class Main {
                 players[i] = sharpers[i - fairPlayerNum];
             }
         }
+        printGameStart();
         runGameRound(players);
         printPlayersScores(players);
         printWinner(players);
@@ -172,7 +174,6 @@ public class Main {
         Scanner scanner = new Scanner(System.in);
         printGreeting();
         int gameMode = parseGameMode(scanner);
-        printGameStart();
         if (gameMode == 1) {
             runFirstGameMode();
         } else {
