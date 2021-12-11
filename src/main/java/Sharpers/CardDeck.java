@@ -4,6 +4,7 @@ import java.util.Random;
 
 public class CardDeck {
     private Random rnd;
+
     public CardDeck() {
         rnd = new Random();
     }

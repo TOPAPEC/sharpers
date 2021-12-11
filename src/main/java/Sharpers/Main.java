@@ -1,7 +1,9 @@
+/*
+ * File contains main and its auxiliary methods.
+ */
+
 package Sharpers;
 
-import java.util.Arrays;
-import java.util.Comparator;
 import java.util.Scanner;
 import java.util.stream.IntStream;
 
@@ -13,6 +15,12 @@ public class Main {
                 "2. Custom number of sharpers and players");
     }
 
+    /**
+     * Parses number of gamemode with input tips.
+     *
+     * @param scanner for reading lines.
+     * @return Entered number of gamemode.
+     */
     private static int parseGameMode(Scanner scanner) {
         int gameMode = -1;
         while (gameMode == -1) {
@@ -34,18 +42,24 @@ public class Main {
         System.out.println("Time to announce scores!");
         for (int i = 0; i < players.length; ++i) {
             String playerStatus = players[i].getClass().getSimpleName();
-            System.out.println(playerStatus + " " + i + " has score " + players[i].accessScore());
+            System.out.println(playerStatus + " " + i + " has score " + players[i].getScore());
         }
     }
 
+    /**
+     * Find winner (based on max score) among players in array.
+     *
+     * @param players array of players.
+     */
     private static void printWinner(PlayerBaseClass[] players) {
         // Get indices of player array sorted by score.
         int[] sortedIndices = IntStream.range(0, players.length).boxed()
-                .sorted((i, j) -> players[i].accessScore() - players[j].accessScore())
+                .sorted((i, j) -> players[i].getScore() - players[j].getScore())
                 .mapToInt(ele -> ele).toArray();
         String playerStatus = players[sortedIndices.length - 1].getClass().getSimpleName();
         System.out.println("The winner is " + playerStatus + " " + sortedIndices[sortedIndices.length - 1] + "!");
     }
+
 
     private static void printPlayerNumInputTip() {
         System.out.println("Enter number of fair players and number of sharpers separated by space.\n" +
@@ -53,6 +67,13 @@ public class Main {
                 " than 100 (and you should consider your hardware limitations too).");
     }
 
+    /**
+     * Parses number of fairplayers and sharpers with input tips.
+     *
+     * @param scanner for reading lines.
+     * @return array of two elements: number of fair players and number of
+     * sharpers.
+     */
     private static int[] parsePlayerCount(Scanner scanner) {
         int[] playerCount = new int[]{-1, -1};
         while (playerCount[0] == -1 && playerCount[1] == -1) {
@@ -75,6 +96,12 @@ public class Main {
         return playerCount;
     }
 
+    /**
+     * Starts all players waits for 10s, stops and waits for all of them.
+     *
+     * @param players array of players.
+     * @throws InterruptedException if player thread was interrupted.
+     */
     private static void runGameRound(PlayerBaseClass[] players) throws InterruptedException {
         for (var player : players) {
             player.start();
@@ -88,6 +115,11 @@ public class Main {
         }
     }
 
+    /**
+     * Executes first gamemode.
+     *
+     * @throws InterruptedException if one of player threads was interrupted unexpectedly.
+     */
     private static void runFirstGameMode() throws InterruptedException {
         CardDeck deck = new CardDeck();
         FairPlayer fairPlayer = new FairPlayer(deck);
@@ -99,6 +131,12 @@ public class Main {
         printWinner(players);
     }
 
+    /**
+     * Executes second gamemode with custom player number.
+     *
+     * @param scanner for reading input.
+     * @throws InterruptedException if one of player threads was interrupted unexpectedly.
+     */
     private static void runSecondGameMode(Scanner scanner) throws InterruptedException {
         CardDeck deck = new CardDeck();
         printPlayerNumInputTip();
@@ -117,8 +155,7 @@ public class Main {
         for (int i = 0; i < fairPlayerNum + sharperNum; ++i) {
             if (i < fairPlayerNum) {
                 players[i] = fairPlayers[i];
-            }
-            else {
+            } else {
                 players[i] = sharpers[i - fairPlayerNum];
             }
         }
@@ -127,14 +164,18 @@ public class Main {
         printWinner(players);
     }
 
+    private static void printGameStart() {
+        System.out.println("Players start drawing cards!");
+    }
+
     public static void main(String[] args) throws InterruptedException {
         Scanner scanner = new Scanner(System.in);
         printGreeting();
         int gameMode = parseGameMode(scanner);
+        printGameStart();
         if (gameMode == 1) {
             runFirstGameMode();
-        }
-        else {
+        } else {
             runSecondGameMode(scanner);
         }
         System.out.println("Game ended successfully!");
